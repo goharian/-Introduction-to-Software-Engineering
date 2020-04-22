@@ -5,6 +5,8 @@
  */
 package primitives;
 
+import java.util.function.DoubleToIntFunction;
+
 /**
  * A direction and size, defined by its end point (where the starting point - at
  * the origin).
@@ -70,7 +72,7 @@ public class Vector
      */
     public Vector(Vector v)
     {
-        head = v.head;
+        head = new Point3D(v.getHead());
     }
     // </editor-fold>
 

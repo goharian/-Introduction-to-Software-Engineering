@@ -43,16 +43,6 @@ public abstract class RadialGeometry implements Geometry
     }
 
     /**
-     * @param point Point across the radial geometry
-     * @return Normal vector perpendicular to the radial geometry
-     */
-    @Override
-    public Vector getNormal(Point3D point)
-    {
-        return null;
-    }
-
-    /**
      * @return A string representing the specified radial geometry object
      */
     @Override
