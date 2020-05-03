@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.LinkedList;
 import java.util.List;
 import primitives.*;
 import static primitives.Util.*;
@@ -83,5 +84,52 @@ public class Polygon implements Geometry {
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.getNormal();
+    }
+
+    /**
+     *
+     * @param ray ray to find intersection with
+     * @return list of intersections with polygon or null
+     * @author Rivka
+     */
+    @Override
+    public List<Point3D> findIntsersections(Ray ray)
+    {
+        List<Point3D> intersection = _plane.findIntsersections(ray);//finds intersection point
+        if (intersection!=null)//if there is an intersection with the plane checks if it's in the polygon
+        {
+
+            LinkedList<Vector> subtracts = new LinkedList<Vector>();//list for calculations
+            for(int i = 0; i<_vertices.size(); i++)//iterates over vertix to calculate i-rayHead (ray's head)
+            {
+                //vn = pn-rayHead
+                subtracts.add(_vertices.get(i).subtract(ray.getStart()));//adds calculation to list
+            }
+            //v*N1. N1 = normalize(v1xv2)
+            double normalize = Util.alignZero(ray.getDirection().dotProduct(subtracts.get(0).crossProduct(subtracts.get(1)).normalize()));
+            //saves first to compare others with
+            for (int index= 1; index<subtracts.size();index++) //iterates over subtracted vectors
+            {
+                double curNormalize;
+                if (index < subtracts.size()-1)//not last vector in list
+                {
+                    //Ni = normalize(ni x n(i-1))
+                    //v*Ni
+
+                    curNormalize = Util.alignZero(ray.getDirection().dotProduct(subtracts.get(index).crossProduct(subtracts.get(index+1)).normalize()));
+                }
+                else
+                {
+                    //Nn = normalize (vn x v1)
+                    //v* Nn
+                    curNormalize = Util.alignZero(ray.getDirection().dotProduct((subtracts.get(index).crossProduct(subtracts.get(0))).normalize()));
+                }
+                if (curNormalize*normalize<=0) //if the first normalize or the current one is zero or or both their signs were different
+                    return null;// no intersection
+            }
+            return intersection;//if the sign for all calculations of v*ni was the same it's in the polygon
+        }
+
+        return null;//no point
     }
 }

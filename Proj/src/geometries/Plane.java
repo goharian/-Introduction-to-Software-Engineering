@@ -1,7 +1,14 @@
 package geometries;
 
 import primitives.Point3D;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * Geometric plane in 3D cartesian coordinates
@@ -67,6 +74,45 @@ public class Plane implements Geometry
     public Point3D getPoint()
     {
         return _point;
+    }
+
+
+    /**
+     *
+     * @param ray ray to check intersection with
+     * @return returns inersection point. if ray doesn't intersect or ray's head is on the plane returns null
+     */
+    @Override
+    public List<Point3D> findIntsersections(Ray ray) {
+        try {
+            if (ray.getStart() == this._point) //p0 = q0
+                return null;
+            double t, nv = _normal.dotProduct(ray.getDirection()), nqp = _normal.dotProduct(this._point.subtract(ray.getStart()));
+            //t's denominator and numerator calculation
+
+            if (!isZero(nv)) //n and v aren't orthogonal
+            {
+                if (!isZero(nqp)) //the ray's head isn't on the plane. otherwise returns null
+                {
+                    t = alignZero(nqp / nv);//calculates t
+                    if (t > 0) //positive and not zero
+                    {
+                        LinkedList<Point3D> linkL = new LinkedList<Point3D>(); //creates list
+                        linkL.add(ray.getPoint(t)); //adds single point to list
+                        return linkL; //returns it
+                    }
+
+                }
+
+            }
+            return null;
+            //any other case ray doesn't cut plane
+        }
+        catch (IllegalArgumentException e)//thrown if q0 and p0 are the same point
+        {
+            return null;
+        }
+
     }
 
     /**

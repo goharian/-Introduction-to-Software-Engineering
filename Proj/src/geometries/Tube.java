@@ -4,6 +4,8 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * tube in a 3D Cartesian coordinate wth a radius and ray
  *
@@ -38,8 +40,7 @@ public class Tube extends RadialGeometry
         Point3D p = new Point3D(point);
         double t = v.dotProduct(new Vector(p));
         Point3D o = new Point3D(v.scale(t).getHead());
-        Vector n = (p.subtract(o)).normalize();
-        return n;
+        return (p.subtract(o)).normalize();
     }
 
     /**
@@ -57,5 +58,10 @@ public class Tube extends RadialGeometry
     public String toString()
     {
         return "Tube{" + "_axisRay=" + _axisRay + '}';
+    }
+
+    @Override
+    public List<Point3D> findIntsersections(Ray ray) {
+        return null;
     }
 }
