@@ -87,15 +87,14 @@ public class Polygon implements Geometry {
     }
 
     /**
-     *
+     * Find intersections points with the polygon
      * @param ray ray to find intersection with
      * @return list of intersections with polygon or null
-     * @author Rivka
      */
     @Override
-    public List<Point3D> findIntsersections(Ray ray)
+    public List<Point3D> findIntersections(Ray ray)
     {
-        List<Point3D> intersection = _plane.findIntsersections(ray);//finds intersection point
+        List<Point3D> intersection = _plane.findIntersections(ray);//finds intersection point
         if (intersection!=null)//if there is an intersection with the plane checks if it's in the polygon
         {
 

@@ -13,12 +13,12 @@ import java.util.function.DoubleToIntFunction;
  *
  * @author BS"D Matanya Goharian, Yaniv Moradov <matanya.goharian@gmail.com >
  */
-public class Vector
-{
+public class Vector {
 
     private Point3D head;
 
     // <editor-fold defaultstate="collapsed" desc="ctor">
+
     /**
      * builds vector with three coordinates
      *
@@ -26,10 +26,8 @@ public class Vector
      * @param y coordinate on y axel
      * @param z coordinate on z axel
      */
-    public Vector(Coordinate x, Coordinate y, Coordinate z)
-    {
-        if (new Point3D(x, y, z).equals(Point3D.ZERO))
-        {
+    public Vector(Coordinate x, Coordinate y, Coordinate z) {
+        if (new Point3D(x, y, z).equals(Point3D.ZERO)) {
             throw new IllegalArgumentException();
         }
         head = new Point3D(x, y, z);
@@ -42,10 +40,8 @@ public class Vector
      * @param y point on y axel
      * @param z point on z axel
      */
-    public Vector(double x, double y, double z)
-    {
-        if (new Point3D(x, y, z).equals(Point3D.ZERO))
-        {
+    public Vector(double x, double y, double z) {
+        if (new Point3D(x, y, z).equals(Point3D.ZERO)) {
             throw new IllegalArgumentException();
         }
         head = new Point3D(new Coordinate(x), new Coordinate(y), new Coordinate(z));
@@ -56,10 +52,8 @@ public class Vector
      *
      * @param p vector's head is set to head received
      */
-    public Vector(Point3D p)
-    {
-        if (p.equals(new Point3D(Point3D.ZERO)))
-        {
+    public Vector(Point3D p) {
+        if (p.equals(new Point3D(Point3D.ZERO))) {
             throw new IllegalArgumentException();
         }
         head = p;
@@ -70,8 +64,7 @@ public class Vector
      *
      * @param v vector to copy
      */
-    public Vector(Vector v)
-    {
+    public Vector(Vector v) {
         head = new Point3D(v.getHead());
     }
     // </editor-fold>
@@ -79,8 +72,7 @@ public class Vector
     /**
      * @return head of vector as new point
      */
-    public Point3D getHead()
-    {
+    public Point3D getHead() {
         return new Point3D(head);
     }
 
@@ -90,8 +82,7 @@ public class Vector
      * @param v vector to subtract with the current vector
      * @return new vector that equals to (vector - v)
      */
-    public Vector subtract(Vector v)
-    {
+    public Vector subtract(Vector v) {
         return new Vector(
                 head.getX().get() - v.head.getX().get(),
                 head.getY().get() - v.head.getY().get(),
@@ -104,8 +95,7 @@ public class Vector
      * @param v vector to add to current vector
      * @return new vector with addition of two vectors
      */
-    public Vector add(Vector v)
-    {
+    public Vector add(Vector v) {
         return new Vector(head.add(v));
     }
 
@@ -115,8 +105,7 @@ public class Vector
      * @param num The scalar that doubles the vector
      * @return vector that equals to (vector * num)
      */
-    public Vector scale(double num)
-    {
+    public Vector scale(double num) {
         return new Vector(
                 head.getX().get() * num,
                 head.getY().get() * num,
@@ -128,8 +117,7 @@ public class Vector
      *
      * @return vector's length squared
      */
-    public double lengthSquared()
-    {
+    public double lengthSquared() {
         return (head.getX().get()) * (head.getX().get())
                 + (head.getY().get()) * (head.getY().get())
                 + (head.getZ().get()) * (head.getZ().get());
@@ -140,8 +128,7 @@ public class Vector
      *
      * @return vector's length
      */
-    public double length()
-    {
+    public double length() {
         return Math.sqrt(this.lengthSquared());
     }
 
@@ -150,8 +137,7 @@ public class Vector
      *
      * @return The current vector after normalisation
      */
-    public Vector normalize()
-    {
+    public Vector normalize() {
         double length = this.length();
 
         //normalizes vector head
@@ -168,8 +154,7 @@ public class Vector
      *
      * @return A copy of the current vector after normalisation
      */
-    public Vector normalized()
-    {
+    public Vector normalized() {
         return new Vector(this.normalize());
     }
 
@@ -179,8 +164,7 @@ public class Vector
      * @param v Second vector for calculation
      * @return Result of the dot product between a two vectors.
      */
-    public double dotProduct(Vector v)
-    {
+    public double dotProduct(Vector v) {
         return head.getX().get() * v.head.getX().get()
                 + head.getY().get() * v.head.getY().get()
                 + head.getZ().get() * v.head.getZ().get();
@@ -192,8 +176,7 @@ public class Vector
      * @param v Second vector for calculation
      * @return Result of the cross product between a two vectors.
      */
-    public Vector crossProduct(Vector v)
-    {
+    public Vector crossProduct(Vector v) {
         return new Vector(
                 head.getY().get() * v.head.getZ().get() - head.getZ().get() * v.head.getY().get(),
                 head.getZ().get() * v.head.getX().get() - head.getX().get() * v.head.getZ().get(),
@@ -207,18 +190,14 @@ public class Vector
      * @return true if they are equal, else false
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final Vector other = (Vector) obj;
@@ -230,8 +209,7 @@ public class Vector
      * @return A string representing the specified Vector object
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "head=" + head.toString();
     }
 

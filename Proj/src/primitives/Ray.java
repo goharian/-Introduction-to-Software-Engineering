@@ -36,6 +36,12 @@ public class Ray {
     }
     // </editor-fold>
 
+    public Ray(Point3D ZERO, Vector vector)
+    {
+        ZERO = start;
+        direction = vector.normalize();
+    }
+
     /**
      * @return direction of the ray as new vector
      */

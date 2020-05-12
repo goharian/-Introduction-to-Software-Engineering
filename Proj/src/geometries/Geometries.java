@@ -3,7 +3,6 @@ package geometries;
 
 import primitives.Point3D;
 import primitives.Ray;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,11 +39,11 @@ public class Geometries implements Intersectable {
      * @return list of interesections from all shapes in list
      */
     @Override
-    public List<Point3D> findIntsersections(Ray ray) {
+    public List<Point3D> findIntersections(Ray ray) {
         LinkedList<Point3D> intersections = new LinkedList<Point3D>(); //New list to store points in
         for (Intersectable shape : _shapes)//iterates over list
         {
-            List<Point3D> thisIntersections = shape.findIntsersections(ray);//finds intersections
+            List<Point3D> thisIntersections = shape.findIntersections(ray);//finds intersections
             if (thisIntersections != null)//interesections returned
                 intersections.addAll(thisIntersections);//adds all points to end of intersections list
         }

@@ -80,14 +80,17 @@ public class Plane implements Geometry
     /**
      *
      * @param ray ray to check intersection with
-     * @return returns inersection point. if ray doesn't intersect or ray's head is on the plane returns null
+     * @return returns intersection point.
+     * if ray doesn't intersect or ray's head is on the plane returns null
      */
     @Override
-    public List<Point3D> findIntsersections(Ray ray) {
+    public List<Point3D> findIntersections(Ray ray) {
         try {
-            if (ray.getStart() == this._point) //p0 = q0
+            if (this._point.equals(ray.getStart())) //p0 = q0
                 return null;
-            double t, nv = _normal.dotProduct(ray.getDirection()), nqp = _normal.dotProduct(this._point.subtract(ray.getStart()));
+
+            double t, nv = _normal.dotProduct(ray.getDirection()),
+                    nqp = _normal.dotProduct(this._point.subtract(ray.getStart()));
             //t's denominator and numerator calculation
 
             if (!isZero(nv)) //n and v aren't orthogonal

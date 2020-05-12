@@ -60,8 +60,8 @@ public class Sphere extends RadialGeometry {
      * @return list of intersection points with the sphere
      */
     @Override
-    public List<Point3D> findIntsersections(Ray ray) {
-        Vector u = null;
+    public List<Point3D> findIntersections(Ray ray) {
+        Vector u;
         double tm, d, th, t1, t2;
         try {
             u = new Vector(_center.subtract(ray.getStart()));
