@@ -52,7 +52,7 @@ public class PlaneTest {
         // ============ Equivalence Partitions Tests ==============
         //TCO1: ray intersects with plane
         //checks the amount of points returned
-        List<Point3D> intersect = p1.findIntersections(new Ray(new Vector(0, 0, 2), new Point3D(0, 2, 1)));
+        List<Intersectable.GeoPoint> intersect = p1.findIntersections(new Ray(new Vector(0, 0, 2), new Point3D(0, 2, 1)));
         if (intersect == null || intersect.size() != 1)
             fail("invalid amount of points returned");
         //checks that points are correct

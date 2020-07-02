@@ -2,7 +2,7 @@ package primitives;
 
 /**
  * Util class is used for some internal utilities, e.g. controlling accuracy
- * 
+ *
  * @author Dan
  */
 public abstract class Util {
@@ -23,7 +23,7 @@ public abstract class Util {
 
     /**
      * Checks whether the number is [almost] zero
-     * 
+     *
      * @param number
      * @return true if the number is zero or almost zero, false otherwise
      */
@@ -33,7 +33,7 @@ public abstract class Util {
 
     /**
      * Aligns the number to zero if it is almost zero
-     * 
+     *
      * @param number
      * @return 0.0 if the number is very close to zero, the number itself otherwise
      */

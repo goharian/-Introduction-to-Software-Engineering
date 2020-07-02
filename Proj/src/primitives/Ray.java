@@ -36,12 +36,6 @@ public class Ray {
     }
     // </editor-fold>
 
-    public Ray(Point3D ZERO, Vector vector)
-    {
-        ZERO = start;
-        direction = vector.normalize();
-    }
-
     /**
      * @return direction of the ray as new vector
      */
@@ -62,6 +56,10 @@ public class Ray {
      */
     public Point3D getPoint(double t) {
         return new Point3D(start.add(direction.scale(t)));
+    }
+
+    public Point3D getIntersectionPoint(double t) {
+        return (start.add(direction.scale(t)));
     }
 
     /**

@@ -6,35 +6,34 @@ import scene.Scene;
 import elements.*;
 import geometries.*;
 import primitives.*;
+
 import java.util.List;
 
 /**
  * class that renders color pictures in scene.
  * creates matrix of colors for picture from the scene
+ *
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
-public class Render
-{
+public class Render {
     private ImageWriter _imageWriter;
     private Scene _scene;
 
     /**
-     *
-     * @param _scene creates render with scene recieved
-     */
-    public Render(Scene _scene) {
-        this._scene = _scene;
-    }
-
-    /**
-     *
      * @param imageWriter pixel color matrix information class
-     * @param scene scene to render based on
+     * @param scene       scene to render based on
      */
     public Render(ImageWriter imageWriter, Scene scene) {
         this._imageWriter = imageWriter;
         this._scene = scene;
+    }
+
+    /**
+     * @param _scene creates render with scene recieved
+     */
+    public Render(Scene _scene) {
+        this._scene = _scene;
     }
 
     public Scene get_scene() {
@@ -46,52 +45,100 @@ public class Render
      * This function does not creating the picture file, but create the buffer pf pixels
      */
     public void renderImage() {
-        java.awt.Color background = _scene.getBackground().getColor();
         Camera camera = _scene.getCamera();
         Intersectable geometries = _scene.getGeometries();
+        java.awt.Color background = _scene.getBackground().getColor();
         double distance = _scene.getDistance();
+        //Nx and Ny are the width and height of the image.
+        int nX = _imageWriter.getNx();//columns
+        int nY = _imageWriter.getNy();//rows
 
         //width and height are the number of pixels in the rows
         //and columns of the view plane
         int width = (int) _imageWriter.getWidth();
         int height = (int) _imageWriter.getHeight();
+        Ray ray;
 
-        //Nx and Ny are the width and height of the image.
-        int Nx = _imageWriter.getNx(); //columns
-        int Ny = _imageWriter.getNy(); //rows
+        // for each point (i,j) in the view plane
+        // i is pixel row number and j is pixel in the row number
         //pixels grid
-        for (int row = 0; row < height; ++row) {
-            for (int column = 0; column < width; ++column) {
-                Ray ray = camera.constructRayThroughPixel(Nx, Ny, column, row, distance, width, height);
-                List<Point3D> intersectionPoints = geometries.findIntersections(ray);
-                if (intersectionPoints == null) {
-                    _imageWriter.writePixel(column, row, background);
-                }
+        for (int i = 0; i < nY; i++) {
+            for (int j = 0; j < nX; j++) {
+                ray = camera.constructRayThroughPixel(nX, nY, j, i, distance, width, height);
+                List<Intersectable.GeoPoint> intersectionPoints = geometries.findIntersections(ray);
+                if (intersectionPoints == null)
+                    _imageWriter.writePixel(j, i, background);
                 else {
-                    Point3D closestPoint = getClosestPoint(intersectionPoints);
-                    java.awt.Color pixelColor = calcColor(closestPoint).getColor();
-                    _imageWriter.writePixel(column, row, pixelColor);
+                    Intersectable.GeoPoint clo = getClosestPoint(intersectionPoints);
                 }
+                Intersectable.GeoPoint closestPoint = getClosestPoint(intersectionPoints);
+                if (closestPoint != null)
+                    _imageWriter.writePixel(j, i, calcColor(closestPoint).getColor());
+
             }
         }
     }
 
     /**
-     * Printing the grid with a fixed interval between lines
+     * Calculate the color intensity in the point
      *
-     * @param interval The interval between the lines.
+     * @param geoPoint the point to calculate the color
+     * @return the color intensity
      */
-    public void printGrid(int interval, java.awt.Color colorsep) {
-        double rows = this._imageWriter.getNy();
-        double columns = _imageWriter.getNx();
-        //Writing the lines.
-        for (int row = 0; row < rows; ++row) {
-            for (int column = 0; column < columns; ++column) {
-                if (column % interval == 0 || row % interval == 0) {
-                    _imageWriter.writePixel(column, row, colorsep);
+    private Color calcColor(Intersectable.GeoPoint geoPoint) {
+        Color resultColor;
+        Color ambientLight = _scene.getAmbientLight().get_intensity();
+        Color emissionLight = geoPoint.geometry.getEmission();
+        resultColor = ambientLight;
+        resultColor = resultColor.add(emissionLight);
+        List<LightSource> lights = _scene.get_lights();
+        Material material = geoPoint.geometry.getMaterial();
+        Vector v = geoPoint.point.subtract(_scene.getCamera().getP0()).normalize();
+        Vector n = geoPoint.geometry.getNormal(geoPoint.point).normalize();
+        int nShininess = material.get_nShininess();
+        double kd = material.get_kD();
+        double ks = material.get_kS();
+        if (lights != null) {
+            for (LightSource lightSource : lights) {
+                Vector l = lightSource.getL(geoPoint.point).normalize();
+                if (n.dotProduct(l) * n.dotProduct(v) > 0) {
+                    Color lightIntensity = lightSource.getIntensity(geoPoint.point);
+                    Color diffuse = calcDiffusive(kd, l, n, lightIntensity);
+                    Color specular = calcSpecular(ks, l, n, v, nShininess, lightIntensity);
+                    resultColor = resultColor.add(diffuse, specular);
                 }
             }
         }
+        return resultColor;
+    }
+
+    /**
+     * this function calculates the Specular light
+     *
+     * @param ks
+     * @param l
+     * @param n
+     * @param v
+     * @param nShininess
+     * @param lightIntensity
+     * @return the Specular light
+     */
+    private Color calcSpecular(double ks, Vector l, Vector n, Vector v, int nShininess, Color lightIntensity) {
+        Vector r = l.subtract(n.scale(l.dotProduct(n) * 2));
+        return lightIntensity.scale(ks * Math.pow(Math.max(0, v.scale(-1).dotProduct(r)), nShininess));
+    }
+
+    /**
+     * this function calculates the Diffusive light
+     *
+     * @param kd
+     * @param l
+     * @param n
+     * @param lightIntensity
+     * @return the diffuse light
+     */
+    private Color calcDiffusive(double kd, Vector l, Vector n, Color lightIntensity) {
+        return lightIntensity.scale(kd * Math.abs(l.dotProduct(n)));
     }
 
     /**
@@ -101,26 +148,38 @@ public class Render
      *                           this list the closet point to P0 of the camera in the scene.
      * @return the closest point to the camera
      */
-
-    /**
-     *
-     * @param intersectionPoints points of intersection in scene
-     * @return closest intersection point to viewplane
-     */
-    private Point3D getClosestPoint(List<Point3D> intersectionPoints) {
-        Point3D result = null;
-        double startValue = Double.MAX_VALUE;
-
-        Point3D p0 = this._scene.getCamera().get_p0();
-
-        for (Point3D point3D : intersectionPoints) {
-            double distance = p0.distance(point3D);
-            if (distance < startValue) {
-                startValue = distance;
-                result = point3D;
+    private Intersectable.GeoPoint getClosestPoint(List<Intersectable.GeoPoint> intersectionPoints) {
+        Intersectable.GeoPoint result = null;
+        double minDistance = Double.MAX_VALUE;
+        Point3D p0 = this._scene.getCamera().getP0();
+        if (intersectionPoints == null)
+            return null;
+        for (Intersectable.GeoPoint geoPoint : intersectionPoints) {
+            double distance = p0.distance(geoPoint.point);
+            if (distance < minDistance) {
+                minDistance = distance;
+                result = geoPoint;
             }
         }
         return result;
+    }
+
+    /**
+     * Printing the grid with a fixed interval between lines
+     *
+     * @param interval The interval between the lines.
+     */
+    public void printGrid(int interval, java.awt.Color color) {
+        double rows = this._imageWriter.getNx();
+        double columns = _imageWriter.getNy();
+        //Writing the lines.
+        for (int col = 0; col < columns; col++) {
+            for (int row = 0; row < rows; row++) {
+                if (col % interval == 0 || row % interval == 0) {
+                    _imageWriter.writePixel(row, col, color);
+                }
+            }
+        }
     }
 
     /**
@@ -128,14 +187,5 @@ public class Render
      */
     public void writeToImage() {
         _imageWriter.writeToImage();
-    }
-
-    /**
-     *
-     * @param point point in scene
-     * @return light on that point
-     */
-    private Color calcColor(Point3D point) {
-        return _scene.getAmbientLight().getIntensity();
     }
 }

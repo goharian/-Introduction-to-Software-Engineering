@@ -4,96 +4,92 @@ import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
 
+import static primitives.Util.isZero;
+
 /**
- * Document   : Camera
- * Author     : BS"D Matanya Goharian, Yaniv Moradov
+ *
+ * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
 public class Camera {
-    private Point3D _p0;
-    private Vector _vUp;
-    private Vector _vTo;
-    private Vector _vRight;
+    Point3D p0;
+    Vector vUp;
+    Vector vTo;
+    Vector vRight;
 
     /**
-     * @param p0  camera location
-     * @param vUp camera coordinates in 3D Cartesian coordinate system
-     * @param vTo camera coordinates in 3D Cartesian coordinate system
-     * @throws IllegalArgumentException for none-orthogonal direction vectors
+     *parameter constructor
+     * @param p0 - the camera center point
+     * @param vUp The vector to up
+     * @param vTo The vector towards the scene
      */
-    public Camera(Point3D p0, Vector vUp, Vector vTo) {
-        if (vUp.dotProduct(vTo) != 0) // if the two vectors aren't orthogonal
-            throw new IllegalArgumentException("vectors much be orthogonal");
-
-        this._p0 = p0;
-        this._vUp = vUp.normalized(); //normalizes all vectors
-        this._vTo = vTo.normalized();
-        this._vRight = vTo.crossProduct(vUp);//finds orthogonal vector to both
-
+    public Camera(Point3D p0, Vector vTo, Vector vUp) {
+        if(vTo.dotProduct(vUp) !=0)
+            throw new IllegalArgumentException("vectors are not orthogonal");
+        this.p0 = p0;
+        this.vUp = vUp.normalize();
+        this.vTo = vTo.normalize();
+        this.vRight = vTo.crossProduct(vUp).normalize();
     }
 
     /**
-     * according to pg. 11 powerpoint 4
-     * @param nX             x coordinate of pixel
-     * @param nY             y coordinate of pixel
-     * @param j              pixel column
-     * @param i              pixel row in matrix of viewplane
-     * @param screenDistance screen distance from camera
-     * @param screenWidth    in pixels
-     * @param screenHeight   in pixels
-     * @return ray constructed from information received
+     * getter
+     * @return po - center point of the camera
      */
-    public Ray constructRayThroughPixel(int nX, int nY,
-                                        int j, int i, double screenDistance,
-                                        double screenWidth, double screenHeight) {
-        //Ratio (pixel width & height)
-        double rY = screenHeight / nY,
-                rX = screenWidth / nX;
-
-        //Image center
-        Point3D Pc = _p0.add(_vTo.scale(screenDistance));//Pc = P0 + d*Vto
-
-        //Pixel[i,j] center
-        Point3D Pij = Pc;//pixel center
-        double xj = (j - nX / 2.0) * rX + rX / 2.0;
-        double yi = (i - nY / 2.0) * rY + rY / 2.0;
-        if (xj != 0)
-            Pij = Pij.add(_vRight.scale(xj));
-        if (yi != 0)
-            Pij = Pij.add(_vUp.scale(-yi));
-
-
-        Vector Vij = Pij.subtract(_p0);
-        return new Ray(Vij.normalize(), _p0);//returns p0 and normalized vij
+    public Point3D getP0() {
+        return p0;
     }
 
     /**
-     * @return camera's location
+     * getter
+     * @return vUp The vector to up
      */
-    public Point3D get_p0() {
-        return new Point3D(_p0);
+    public Vector getvUp() {
+        return vUp;
     }
 
     /**
-     * @return vector up
+     * getter
+     * @return vTo The vector towards the scene
      */
-    public Vector get_vUp() {
-        return new Vector(_vUp);
+    public Vector getvTo() {
+        return vTo;
+    }
+
+    public Vector getvRight() {
+        return vRight;
     }
 
     /**
-     * @return vector to camera
+     *
+     * @param nX
+     * @param nY
+     * @param j
+     * @param i
+     * @param screenDistance
+     * @param screenWidth
+     * @param screenHeight
+     * @return a ray from the camera through the pixel
      */
-    public Vector get_vTo() {
-        return new Vector(_vTo);
-    }
-
-    /**
-     * @return camera right vector
-     */
-    public Vector get_vRight() {
-        return new Vector(_vRight);
+    public Ray constructRayThroughPixel (int nX, int nY,
+                                         int j, int i, double screenDistance,
+                                         double screenWidth, double screenHeight)
+    {
+        if (isZero(screenDistance))
+        {
+            throw new IllegalArgumentException("Distance can't be 0");
+        }
+        Point3D pc = p0.add(vTo.scale(screenDistance));
+        double rY = screenHeight/nY;
+        double rX = screenWidth/nX;
+        double xJ = (j-((nX - 1)/2d))*rX;
+        double yI = (i-((nY - 1)/2d))*rY;
+        Point3D pij = pc;
+        if(!isZero(xJ))
+            pij = pij.add(vRight.scale(xJ));
+        if(!isZero(yI))
+            pij = pij.add(vUp.scale(-yI));
+        Vector vij = pij.subtract(p0);
+        return new Ray(vij.normalize(), p0);
     }
 }
-
-

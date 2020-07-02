@@ -1,5 +1,7 @@
 package geometries;
 
+import primitives.Color;
+import primitives.Material;
 import primitives.Point3D;
 import primitives.Vector;
 
@@ -9,29 +11,50 @@ import primitives.Vector;
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
-public abstract class RadialGeometry implements Geometry
+public abstract class RadialGeometry extends Geometry
 {
 
     private double _radius;
 
     /**
+     * constructor
+     * @param emission
+     * @param material
+     */
+    public RadialGeometry(Color emission, Material material, double _radius) {
+        super(emission, material);
+        this._radius = _radius;
+    }
+
+    /**
+     * constructor
+     * @param emission
+     * @param _radius
+     */
+    public RadialGeometry(Color emission, double _radius) {
+
+        this(emission, new Material(0,0,0), _radius);
+    }
+
+    /**
      * builds Radial Geometry with radius
      *
-     * @param radius sets the desired radius
+     * @param _radius sets the desired radius
      */
-    public RadialGeometry(double radius)
-    {
-        this._radius = radius;
+    public RadialGeometry(double _radius) {
+        this(Color.BLACK, new Material(0,0,0), _radius);
     }
 
     /**
      * builds a copy of the resulting radial
      *
-     * @param radial radial to copy
+     * @param _radialGeometry radial to copy
      */
-    RadialGeometry(RadialGeometry radial)
-    {
-        _radius = radial._radius;
+    public RadialGeometry(RadialGeometry _radialGeometry) {
+
+        this._radius = _radialGeometry.getRadius();
+        this.emission = _radialGeometry.getEmission();
+        this.material = _radialGeometry.getMaterial();
     }
 
     /**

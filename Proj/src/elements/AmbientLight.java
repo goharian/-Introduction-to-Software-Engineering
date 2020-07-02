@@ -1,29 +1,21 @@
 package elements;
 
 import primitives.Color;
-
 /**
- * class describing ambient lighting on a scene
+ *
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
-public class AmbientLight {
-    private Color _intensity;//ambient light intensity Ka*Ia
+public class AmbientLight extends Light{
 
     /**
-     *
-     * @param intensity intensity of light
-     * @param kA color fading
+     * constructor
+     * @param _intensity
+     * @param ka
      */
-    public AmbientLight(Color intensity, double kA) {
-        this._intensity = intensity.scale(kA);
+    public AmbientLight(Color _intensity, double ka) {
+        super(_intensity.scale(ka));
     }
 
-    /**
-     *
-     * @return intensity of light
-     */
-    public Color getIntensity() {
-        return new Color(_intensity);
-    }
+
 }

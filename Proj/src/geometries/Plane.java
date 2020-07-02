@@ -1,9 +1,8 @@
 package geometries;
 
-import primitives.Point3D;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,38 +15,83 @@ import static primitives.Util.isZero;
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
-public class Plane implements Geometry
-{
+public class Plane extends Geometry {
 
     private Point3D _point;
     private Vector _normal;
 
     /**
+     * constructor
+     *
+     * @param emission
+     * @param material
+     * @param _point
+     * @param _normal
+     */
+    public Plane(Color emission, Material material, Point3D _point, Vector _normal) {
+        super(emission, material);
+        this._point = _point;
+        this._normal = _normal.normalize();
+    }
+
+    /**
+     * constructor
+     *
+     * @param emission
+     * @param _point
+     * @param _normal
+     */
+    public Plane(Color emission, Point3D _point, Vector _normal) {
+        this(emission, new Material(0, 0, 0), _point, _normal);
+    }
+
+    /**
      * builds plane with 3D point and normal vector
      *
-     * @param point point on the plane
-     * @param normal Normal vector perpendicular to the plane
+     * @param _point  point on the plane
+     * @param _normal Normal vector perpendicular to the plane
      */
-    public Plane(Point3D point, Vector normal)
-    {
-        this._normal = new Vector(normal.normalize());
-        this._point = new Point3D(point);
+    public Plane(Point3D _point, Vector _normal) {
+
+        this(Color.BLACK, new Material(0, 0, 0), _point, _normal);
     }
 
     /**
      * builds plane with 3 point
      *
-     * @param vertice1 first point on the plane
-     * @param vertice2 second point on the plane
-     * @param vertice3 third point on the plane
+     * @param _point1 first point on the plane
+     * @param _point2 second point on the plane
+     * @param _point3 third point on the plane
      */
-    Plane(Point3D vertice1, Point3D vertice2, Point3D vertice3)
-    {
-        _point = new Point3D(vertice1);
-        Vector v1 = vertice2.subtract(vertice1);
-        Vector v2 = vertice3.subtract(vertice1);
-        
-        _normal = v1.crossProduct(v2).normalize();
+    public Plane(Point3D _point1, Point3D _point2, Point3D _point3) {
+        //Vector v1 = _point2.subtract(_point1);
+        //Vector v2 = _point3.subtract(_point1);
+        this(Color.BLACK, new Material(0, 0, 0), _point1, _point2.subtract(_point1).crossProduct(_point3.subtract(_point1)));
+    }
+
+    /**
+     * parameter constructors
+     *
+     * @param emission
+     * @param material
+     * @param _point1
+     * @param _point2
+     * @param _point3  calculate the normal to the plane
+     */
+    public Plane(Color emission, Material material, Point3D _point1, Point3D _point2, Point3D _point3) {
+        this(emission, material, _point1, _point2.subtract(_point1).crossProduct(_point3.subtract(_point1)));
+    }
+
+    /**
+     * parameter constructors
+     *
+     * @param emission
+     * @param _point1
+     * @param _point2
+     * @param _point3  calculate the normal to the plane
+     */
+    public Plane(Color emission, Point3D _point1, Point3D _point2, Point3D _point3) {
+        this(emission, new Material(0, 0, 0), _point1, _point2.subtract(_point1).crossProduct(_point3.subtract(_point1)));
     }
 
     /**
@@ -55,75 +99,47 @@ public class Plane implements Geometry
      * @return Normal vector perpendicular to the plane
      */
     @Override
-    public Vector getNormal(Point3D point)
-    {
+    public Vector getNormal(Point3D point) {
         return getNormal();
     }
 
     /**
      * @return Normal vector perpendicular to the plane
      */
-    public Vector getNormal()
-    {
+    public Vector getNormal() {
         return new Vector(_normal);
     }
 
     /**
      * @return The point on the plane as a new point
      */
-    public Point3D getPoint()
-    {
+    public Point3D getPoint() {
         return _point;
     }
 
 
     /**
-     *
      * @param ray ray to check intersection with
      * @return returns intersection point.
      * if ray doesn't intersect or ray's head is on the plane returns null
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-        try {
-            if (this._point.equals(ray.getStart())) //p0 = q0
-                return null;
-
-            double t, nv = _normal.dotProduct(ray.getDirection()),
-                    nqp = _normal.dotProduct(this._point.subtract(ray.getStart()));
-            //t's denominator and numerator calculation
-
-            if (!isZero(nv)) //n and v aren't orthogonal
-            {
-                if (!isZero(nqp)) //the ray's head isn't on the plane. otherwise returns null
-                {
-                    t = alignZero(nqp / nv);//calculates t
-                    if (t > 0) //positive and not zero
-                    {
-                        LinkedList<Point3D> linkL = new LinkedList<Point3D>(); //creates list
-                        linkL.add(ray.getPoint(t)); //adds single point to list
-                        return linkL; //returns it
-                    }
-
-                }
-
-            }
+    public List<GeoPoint> findIntersections(Ray ray) {
+        if(_point.equals(ray.getStart()))
             return null;
-            //any other case ray doesn't cut plane
-        }
-        catch (IllegalArgumentException e)//thrown if q0 and p0 are the same point
-        {
+        double t = alignZero(_normal.dotProduct(_point.subtract(ray.getStart()))/_normal.dotProduct(ray.getDirection()));
+        if(t<=0)
             return null;
-        }
-
+        List<GeoPoint> intersections = new ArrayList();
+        intersections.add(new GeoPoint(this,ray.getIntersectionPoint(t)));
+        return intersections;
     }
 
     /**
      * @return A string representing the specified plane
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "point=" + _point.toString() + ", normal=" + _normal.toString();
     }
 }

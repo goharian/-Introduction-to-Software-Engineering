@@ -1,8 +1,11 @@
 package geometries;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import primitives.*;
+
 import static primitives.Util.*;
 
 /**
@@ -11,7 +14,7 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -39,13 +42,14 @@ public class Polygon implements Geometry {
      *                                  <li>Three consequent vertices lay in the
      *                                  same line (180&#176; angle between two
      *                                  consequent edges)
-     *                                  <li>The polygon is concave (not convex)</li>
+     *                                  <li>The polygon is concave (not convex></li>
      *                                  </ul>
      */
-    public Polygon(Point3D... vertices) {
+    public Polygon(Color emission, Material material, Point3D... vertices) {
+        super(emission, material);
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
-        _vertices = List.of(vertices);
+        _vertices = Arrays.asList(vertices);
         // Generate the plane according to the first three vertices and associate the
         // polygon with this plane.
         // The plane holds the invariant normal (orthogonal unit) vector to the polygon
@@ -81,6 +85,26 @@ public class Polygon implements Geometry {
         }
     }
 
+    /**
+     * constructor
+     *
+     * @param emission
+     * @param vertices
+     */
+    public Polygon(Color emission, Point3D... vertices) {
+        this(emission, new Material(0, 0, 0), vertices);
+    }
+
+    /**
+     * constructor
+     *
+     * @param vertices
+     */
+    public Polygon(Point3D... vertices) {
+        this(Color.BLACK, new Material(0, 0, 0), vertices);
+    }
+
+
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.getNormal();
@@ -88,47 +112,42 @@ public class Polygon implements Geometry {
 
     /**
      * Find intersections points with the polygon
+     *
      * @param ray ray to find intersection with
      * @return list of intersections with polygon or null
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray)
-    {
-        List<Point3D> intersection = _plane.findIntersections(ray);//finds intersection point
-        if (intersection!=null)//if there is an intersection with the plane checks if it's in the polygon
-        {
+    public List<GeoPoint> findIntersections(Ray ray) {
+        Plane plane = new Plane(emission, material, this._vertices.get(0), this._vertices.get(1), this._vertices.get(2));
+        List<GeoPoint> intersections = plane.findIntersections(ray);
+        if (intersections == null)
+            return null;
+        if (this._vertices.get(0).equals(ray.getStart()) || this._vertices.get(0).equals(intersections.get(0)))
+            return null;
+        Vector v = this._vertices.get(0).subtract(ray.getStart());
+        Vector v1, v2, n;
+        v1 = v;
+        if (this._vertices.get(1).equals(ray.getStart()) || this._vertices.get(1).equals(intersections.get(0)))
+            return null;
+        v2 = this._vertices.get(1).subtract(ray.getStart());
+        n = v1.crossProduct(v2).normalize();
+        if (isZero(ray.getDirection().dotProduct(n)))
+            return null;
+        double sign = ray.getDirection().dotProduct(n);
+        v1 = v2;
 
-            LinkedList<Vector> subtracts = new LinkedList<Vector>();//list for calculations
-            for(int i = 0; i<_vertices.size(); i++)//iterates over vertix to calculate i-rayHead (ray's head)
-            {
-                //vn = pn-rayHead
-                subtracts.add(_vertices.get(i).subtract(ray.getStart()));//adds calculation to list
-            }
-            //v*N1. N1 = normalize(v1xv2)
-            double normalize = Util.alignZero(ray.getDirection().dotProduct(subtracts.get(0).crossProduct(subtracts.get(1)).normalize()));
-            //saves first to compare others with
-            for (int index= 1; index<subtracts.size();index++) //iterates over subtracted vectors
-            {
-                double curNormalize;
-                if (index < subtracts.size()-1)//not last vector in list
-                {
-                    //Ni = normalize(ni x n(i-1))
-                    //v*Ni
-
-                    curNormalize = Util.alignZero(ray.getDirection().dotProduct(subtracts.get(index).crossProduct(subtracts.get(index+1)).normalize()));
-                }
-                else
-                {
-                    //Nn = normalize (vn x v1)
-                    //v* Nn
-                    curNormalize = Util.alignZero(ray.getDirection().dotProduct((subtracts.get(index).crossProduct(subtracts.get(0))).normalize()));
-                }
-                if (curNormalize*normalize<=0) //if the first normalize or the current one is zero or or both their signs were different
-                    return null;// no intersection
-            }
-            return intersection;//if the sign for all calculations of v*ni was the same it's in the polygon
+        for (Point3D vertex : _vertices.subList(2, _vertices.size())) {
+            if (vertex.equals(ray.getStart()) || vertex.equals(intersections.get(0)))
+                return null;
+            v2 = vertex.subtract(ray.getStart());
+            n = v1.crossProduct(v2).normalize();
+            if (ray.getDirection().dotProduct(n) * sign < 0 || isZero(ray.getDirection().dotProduct(n)))
+                return null;
+            v1 = v2;
         }
-
-        return null;//no point
+        n = v1.crossProduct(v).normalize();
+        if (ray.getDirection().dotProduct(n) * sign < 0 || isZero(ray.getDirection().dotProduct(n)))
+            return null;
+        return intersections;
     }
 }

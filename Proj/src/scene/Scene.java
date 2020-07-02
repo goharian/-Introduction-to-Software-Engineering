@@ -5,48 +5,50 @@ import geometries.Geometries;
 import geometries.Intersectable;
 import primitives.Color;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * class representing a scene with all of its details
+ *
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
 public class Scene {
     String _name;
 
-    /**
-     * background color
-     */
-    Color _background;
+    Color _background; //background color
 
-    /**
-     * scene lighting
-     */
-    AmbientLight _ambientLight;
+    AmbientLight _ambientLight; //scene lighting
 
-    /**
-     * list of 3d geometries
-     */
-    Geometries _geometries;
+    Geometries _geometries; //list of 3d geometries
 
     Camera _camera;
 
-    /**
-     * distance of camera from viewplane
-     */
-    double _distance;
+    double _distance; //distance of camera from viewplane
+    List<LightSource> _lights;
 
     /**
-     *
      * @param _name scene name
-     * also create empty list of geometries
+     *              also create empty list of geometries
      */
     public Scene(String _name) {
         this._name = _name;
         this._geometries = new Geometries();
+        _lights = new LinkedList<LightSource>();
     }
 
     /**
+     * getter
      *
+     * @return _lights list
+     */
+    public List<LightSource> get_lights() {
+        return _lights;
+    }
+
+    /**
      * @return scene name
      */
     public String getName() {
@@ -54,7 +56,6 @@ public class Scene {
     }
 
     /**
-     *
      * @return scene background color
      */
     public Color getBackground() {
@@ -62,7 +63,6 @@ public class Scene {
     }
 
     /**
-     *
      * @return scene's ambient lighting
      */
     public AmbientLight getAmbientLight() {
@@ -70,7 +70,6 @@ public class Scene {
     }
 
     /**
-     *
      * @return list of scene geometries
      */
     public Geometries getGeometries() {
@@ -78,7 +77,6 @@ public class Scene {
     }
 
     /**
-     *
      * @return scene camera
      */
     public Camera getCamera() {
@@ -86,7 +84,6 @@ public class Scene {
     }
 
     /**
-     *
      * @return viewplane distance from camera
      */
     public double getDistance() {
@@ -94,7 +91,6 @@ public class Scene {
     }
 
     /**
-     *
      * @param _background color to set background with
      */
     public void setBackground(Color _background) {
@@ -102,7 +98,6 @@ public class Scene {
     }
 
     /**
-     *
      * @param _ambientLight lighting that the scene has
      */
     public void setAmbientLight(AmbientLight _ambientLight) {
@@ -110,7 +105,6 @@ public class Scene {
     }
 
     /**
-     *
      * @param _camera new scene's camera
      */
     public void setCamera(Camera _camera) {
@@ -118,22 +112,31 @@ public class Scene {
     }
 
     /**
-     *
      * @param _distance distance to set to
      * @throws IllegalArgumentException for negative number
      */
     public void set_distance(double _distance) {
-        if (_distance<0)
+        if (_distance < 0)
             throw new IllegalArgumentException("distance must be positive");
         this._distance = _distance;
     }
 
     /**
+     * add the given geometries to the list
      *
      * @param geometries geometries to add to list in scene
      */
-    public void addGeometries(Intersectable... geometries)
-    {
+    public void addGeometries(Intersectable... geometries) {
         _geometries.add(geometries);
     }
+
+    /**
+     * add the given lights to the list
+     *
+     * @param lights lights to add to list in scene
+     */
+    public void addLights(LightSource... lights) {
+        _lights.addAll(Arrays.asList(lights));
+    }
+
 }

@@ -41,13 +41,13 @@ public class TriangleTest {
         // ============ Equivalence Partitions Tests ==============
 
         //TCO1: ray intersects with triangle
-        List<Point3D> intersects = p1.findIntersections(new Ray(new Vector(0,0,1), new Point3D(3.5,2,1)));
+        List<Intersectable.GeoPoint> intersects = p1.findIntersections(new Ray(new Vector(0,0,1), new Point3D(3.5,2,1)));
         //checks amount of points returned
         if (intersects == null || intersects.size()!=1 )
             fail("invalid amount of points returned");
         //checks that points are correct
         assertEquals("Error! Function does not find ray intersection",
-                new Point3D(3.5,2,2), intersects.get(0));
+                new Point3D(3.5,2,2), intersects.get(0).point);
 
         //TCO2: ray doesn't intersect
         assertEquals("Error! Function finds intersection when there is none",

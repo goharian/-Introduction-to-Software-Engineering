@@ -5,8 +5,7 @@ package primitives;
  *
  * @author BS"D Matanya Goharian, Yaniv Moradov <matanya.goharian@gmail.com >
  */
-public class Point3D
-{
+public class Point3D {
 
     //<editor-fold defaultstate="collapsed" desc="Fields">
     private Coordinate x;
@@ -16,6 +15,7 @@ public class Point3D
     //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="ctor">
+
     /**
      * builds Point3D with three coordinates
      *
@@ -23,8 +23,7 @@ public class Point3D
      * @param y coordinate on y axel
      * @param z coordinate on z axel
      */
-    public Point3D(Coordinate x, Coordinate y, Coordinate z)
-    {
+    public Point3D(Coordinate x, Coordinate y, Coordinate z) {
         this.x = new Coordinate(x);
         this.y = new Coordinate(y);
         this.z = new Coordinate(z);
@@ -37,8 +36,7 @@ public class Point3D
      * @param y point on y axel
      * @param z point on z axel
      */
-    public Point3D(double x, double y, double z)
-    {
+    public Point3D(double x, double y, double z) {
         this(new Coordinate(x), new Coordinate(y), new Coordinate(z));
     }
 
@@ -47,8 +45,7 @@ public class Point3D
      *
      * @param p Point3D to copy
      */
-    public Point3D(Point3D p)
-    {
+    public Point3D(Point3D p) {
         x = p.getX();
         y = p.getY();
         z = p.getZ();
@@ -56,18 +53,15 @@ public class Point3D
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getter">
-    public Coordinate getX()
-    {
+    public Coordinate getX() {
         return new Coordinate(x);
     }
 
-    public Coordinate getY()
-    {
+    public Coordinate getY() {
         return new Coordinate(y);
     }
 
-    public Coordinate getZ()
-    {
+    public Coordinate getZ() {
         return new Coordinate(z);
     }
     // </editor-fold>
@@ -79,8 +73,7 @@ public class Point3D
      * @return A vector from the second point to the point at which the action
      * is performed
      */
-    public Vector subtract(Point3D point)
-    {
+    public Vector subtract(Point3D point) {
         return new Vector(
                 x.get() - point.x.get(),
                 y.get() - point.y.get(),
@@ -93,8 +86,7 @@ public class Point3D
      * @param v Vector to add
      * @return A new point
      */
-    public Point3D add(Vector v)
-    {
+    public Point3D add(Vector v) {
         return new Point3D(
                 x.get() + v.getHead().x.get(),
                 y.get() + v.getHead().y.get(),
@@ -107,8 +99,7 @@ public class Point3D
      * @param point Second point for calculating distance
      * @return The distance between two points squared
      */
-    public double distanceSquared(Point3D point)
-    {
+    public double distanceSquared(Point3D point) {
         return (this.x.get() - point.x.get()) * (this.x.get() - point.x.get())
                 + (this.y.get() - point.y.get()) * (this.y.get() - point.y.get())
                 + (this.z.get() - point.z.get()) * (this.z.get() - point.z.get());
@@ -120,8 +111,7 @@ public class Point3D
      * @param point Second point for calculating distance
      * @return The distance between two points
      */
-    public double distance(Point3D point)
-    {
+    public double distance(Point3D point) {
         return Util.alignZero(Math.sqrt(distanceSquared(point)));
     }
 
@@ -132,20 +122,16 @@ public class Point3D
      * @return true if they are equal, else false
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
 
-        if (!(obj instanceof Point3D))
-        {
+        if (!(obj instanceof Point3D)) {
             return false;
         }
 
@@ -157,8 +143,7 @@ public class Point3D
      * @return A string representing the specified Point3D object
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "x=" + x.toString() + ", y=" + y.toString() + ", z=" + z.toString();
     }
 

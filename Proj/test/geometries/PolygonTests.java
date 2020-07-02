@@ -108,7 +108,7 @@ public class PolygonTests {
         // ============ Equivalence Partitions Tests ==============
 
         //TCO1: ray intersects with polygon
-        List<Point3D> intersects = p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(3, 2, 1)));
+        List<Intersectable.GeoPoint> intersects = p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(3, 2, 1)));
         //checks amount of points returned
         if (intersects == null || intersects.size() != 1)
             fail("invalid amount of points returned");

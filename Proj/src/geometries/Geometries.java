@@ -3,6 +3,8 @@ package geometries;
 
 import primitives.Point3D;
 import primitives.Ray;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,49 +15,44 @@ import java.util.List;
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
 public class Geometries implements Intersectable {
+    List<Intersectable> geometries;
 
-    LinkedList<Intersectable> _shapes;
+    public Geometries() {
+        this.geometries = new ArrayList();
+        //Array list - Dynamically re-sizing
+        //Constant-time positional access
+    }
 
     /**
      * @param geometries geometries to add to list that's being created
      */
     public Geometries(Intersectable... geometries) {
-        _shapes = new LinkedList<Intersectable>();
-        //linkedList chosen because the adding time is O(1) and we only add items to this list, and do less to change them
-        if (geometries.length > 0)//if there are items to add
-            add(geometries); //call add function with geometries to add to list
+        this.geometries = new ArrayList();
+        this.geometries.addAll(Arrays.asList(geometries));
     }
 
     /**
      * @param geometries geometries to add to list
      */
     public void add(Intersectable... geometries) {
-        if (geometries.length > 0) {
-            _shapes.addAll(Arrays.asList(geometries));//adds items in geometries to shapes
-        }
+
+        this.geometries.addAll(Arrays.asList(geometries));
     }
 
     /**
      * @return list of interesections from all shapes in list
      */
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-        LinkedList<Point3D> intersections = new LinkedList<Point3D>(); //New list to store points in
-        for (Intersectable shape : _shapes)//iterates over list
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> intersections = new ArrayList();
+        for (Intersectable g: geometries)
         {
-            List<Point3D> thisIntersections = shape.findIntersections(ray);//finds intersections
-            if (thisIntersections != null)//interesections returned
-                intersections.addAll(thisIntersections);//adds all points to end of intersections list
+            List<GeoPoint> result = g.findIntersections(ray);
+            if(result !=null)
+                intersections.addAll(result);
         }
-        if (intersections.size() == 0)//no elements
+        if(intersections.isEmpty())
             return null;
         return intersections;
-    }
-
-    /**
-     * @return copy of list of shapes
-     */
-    public LinkedList<Intersectable> get_shapes() {
-        return new LinkedList<Intersectable>(_shapes); //creates new list and returns
     }
 }
