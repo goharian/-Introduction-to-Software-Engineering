@@ -16,7 +16,6 @@ import static primitives.Util.isZero;
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
 public class Plane extends Geometry {
-
     private Point3D _point;
     private Vector _normal;
 
@@ -52,9 +51,9 @@ public class Plane extends Geometry {
      * @param _normal Normal vector perpendicular to the plane
      */
     public Plane(Point3D _point, Vector _normal) {
-
         this(Color.BLACK, new Material(0, 0, 0), _point, _normal);
     }
+
 
     /**
      * builds plane with 3 point
@@ -100,20 +99,21 @@ public class Plane extends Geometry {
      */
     @Override
     public Vector getNormal(Point3D point) {
-        return getNormal();
+
+        return get_normal();
     }
 
     /**
      * @return Normal vector perpendicular to the plane
      */
-    public Vector getNormal() {
-        return new Vector(_normal);
+    public Vector get_normal() {
+        return _normal;
     }
 
     /**
      * @return The point on the plane as a new point
      */
-    public Point3D getPoint() {
+    public Point3D get_point() {
         return _point;
     }
 
@@ -125,13 +125,13 @@ public class Plane extends Geometry {
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
-        if(_point.equals(ray.getStart()))
+        if (_point.equals(ray.getStart()))
             return null;
-        double t = alignZero(_normal.dotProduct(_point.subtract(ray.getStart()))/_normal.dotProduct(ray.getDirection()));
-        if(t<=0)
+        double t = alignZero(_normal.dotProduct(_point.subtract(ray.getStart())) / _normal.dotProduct(ray.getDirection()));
+        if (t <= 0)
             return null;
         List<GeoPoint> intersections = new ArrayList();
-        intersections.add(new GeoPoint(this,ray.getIntersectionPoint(t)));
+        intersections.add(new GeoPoint(this, ray.getIntersectionPoint(t)));
         return intersections;
     }
 

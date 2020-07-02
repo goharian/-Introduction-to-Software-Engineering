@@ -1,12 +1,13 @@
 package geometries;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import primitives.*;
 
 import static primitives.Util.*;
+
+import java.util.Arrays;
+
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
@@ -56,7 +57,7 @@ public class Polygon extends Geometry {
         _plane = new Plane(vertices[0], vertices[1], vertices[2]);
         if (vertices.length == 3) return; // no need for more tests for a Triangle
 
-        Vector n = _plane.getNormal();
+        Vector n = _plane.get_normal();
 
         // Subtracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
@@ -85,6 +86,7 @@ public class Polygon extends Geometry {
         }
     }
 
+
     /**
      * constructor
      *
@@ -107,15 +109,9 @@ public class Polygon extends Geometry {
 
     @Override
     public Vector getNormal(Point3D point) {
-        return _plane.getNormal();
+        return _plane.get_normal();
     }
 
-    /**
-     * Find intersections points with the polygon
-     *
-     * @param ray ray to find intersection with
-     * @return list of intersections with polygon or null
-     */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
         Plane plane = new Plane(emission, material, this._vertices.get(0), this._vertices.get(1), this._vertices.get(2));

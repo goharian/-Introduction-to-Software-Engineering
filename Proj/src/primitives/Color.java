@@ -171,4 +171,5 @@ public class Color {
         double b = _b / k;
         return new Color(r, g, b);
     }
+
 }

@@ -1,7 +1,8 @@
 package elements;
 
-import primitives.Color;
 import renderer.ImageWriter;
+
+import java.awt.*;
 
 /**
  * testing image writer
@@ -14,21 +15,19 @@ public class ImageWriterTest {
      * Test method for image writer
      */
     @org.junit.Test
-    public void buildPicture(){
-        ImageWriter iw = new ImageWriter("first squares", 1000, 1600, 500, 800);
-        for (int i = 0 ; i<iw.getNx(); i++)
-            for (int j = 0 ; j<iw.getNy(); j++)// loops over places
-            {
-                if (i % (800/16) == 0 || j % (500/10) == 0) //creates grid in relevant pixels
-                {
-                    iw.writePixel(i,j, new Color(20,200,0).getColor());
+    public void writeToImage() {
+        ImageWriter image = new ImageWriter("firstTest", 1600, 1000, 800, 500);
+        for (int col = 0; col < 500; col++) {
+            for (int row = 0; row < 800; row++) {
+                if (col % 50 == 0 || row % 50 == 0) {
+                    image.writePixel(row, col, java.awt.Color.RED);
                 }
                 else {
-                    iw.writePixel(i,j, new Color(220,0,120).getColor());
+                    image.writePixel(row, col, Color.WHITE);
                 }
-
             }
-        iw.writeToImage();//create image
+        }
+        image.writeToImage();//create image
     }
 
 }

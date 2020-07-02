@@ -15,8 +15,8 @@ public class TubeTest {
      */
     @org.junit.Test
     public void testGetNormal() {
-        Ray r = new Ray(new Vector(0, 1, 0), new Point3D(1, 0, 0));
-        Tube t = new Tube(r, 1);
+        Ray r = new Ray(new Point3D(1, 0, 0), new Vector(0, 1, 0));
+        Tube t = new Tube(1, r);
 
         // ============ Equivalence Partitions Tests ==============
         //TC01: result

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Tube extends RadialGeometry {
 
-    Ray _axisRay;
+    public Ray _ray;
 
     /**
      * constructor
@@ -24,7 +24,7 @@ public class Tube extends RadialGeometry {
      */
     public Tube(Color emission, Material material, double _radius, Ray _ray) {
         super(emission, material, _radius);
-        this._axisRay = _ray;
+        this._ray = _ray;
     }
 
     /**
@@ -35,31 +35,17 @@ public class Tube extends RadialGeometry {
      * @param _ray
      */
     public Tube(Color emission, double _radius, Ray _ray) {
-
-        this(emission, new Material(0, 0, 0), _radius, _ray);
+        this(emission, new Material(0,0,0), _radius, _ray);
     }
 
     /**
-     * parameter constructor
+     * builds tube with radius and ray
      *
      * @param _radius
      * @param _ray
      */
     public Tube(double _radius, Ray _ray) {
-
-        this(Color.BLACK, new Material(0, 0, 0), _radius, _ray);
-    }
-
-
-
-    /**
-     * builds tube with radius and ray
-     *
-     * @param axisRay tube's ray
-     * @param radius  tube's radius
-     */
-    public Tube(Ray axisRay, double radius) {
-        this(Color.BLACK, new Material(0,0,0), radius, axisRay);
+        this(Color.BLACK, new Material(0,0,0), _radius, _ray);
     }
 
     /**
@@ -69,28 +55,28 @@ public class Tube extends RadialGeometry {
      */
     public Tube(RadialGeometry _radialGeometry, Ray _ray) {
         super(_radialGeometry);
-        this._axisRay = _ray;
+        this._ray = _ray;
     }
 
 
     /**
-     * @param point Point across the plane
+     * @param p Point across the plane
      * @return Normal vector perpendicular to the tube
      */
     @Override
-    public Vector getNormal(Point3D point) {
-        Vector v = new Vector(point);
-        Point3D p = new Point3D(point);
-        double t = v.dotProduct(new Vector(p));
-        Point3D o = new Point3D(v.scale(t).getHead());
-        return (p.subtract(o)).normalize();
+    public Vector getNormal(Point3D p)
+    {
+        Vector v = p.subtract((_ray.getStart()));
+        double t = _ray.getDirection().dotProduct(v);
+        Point3D o = _ray.getStart().add(_ray.getDirection().scale(t));
+        Vector n = (p.subtract(o)).normalize();
+        return n;
     }
-
     /**
      * @return Ray of the tube
      */
-    public Ray getAxisRay() {
-        return _axisRay;
+    public Ray get_ray() {
+        return _ray;
     }
 
     /**
@@ -98,7 +84,7 @@ public class Tube extends RadialGeometry {
      */
     @Override
     public String toString() {
-        return "Tube{" + "_axisRay=" + _axisRay + '}';
+        return "Tube{" + "_axisRay=" + _ray + '}';
     }
 
     @Override

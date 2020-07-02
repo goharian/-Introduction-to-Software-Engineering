@@ -11,8 +11,24 @@ package primitives;
 public class Ray {
     private Vector direction;
     private Point3D start;
+    private static final double DELTA = 0.1; //First moving rays size for shading rays, transparency and reflection
+
 
     // <editor-fold defaultstate="collapsed" desc="ctor">
+
+    /**
+     * parameter constructor with delta
+     * @param head
+     * @param direction
+     * @param normal
+     */
+    public Ray(Point3D head, Vector direction, Vector normal) {
+        int sign = 1;
+        if (direction.dotProduct(normal) < 0)
+            sign = -1;
+        this.start = head.add(normal.scale(sign * DELTA));
+        this.direction = direction.normalize();
+    }
 
     /**
      * builds ray with start point and direction
@@ -20,7 +36,9 @@ public class Ray {
      * @param direction
      * @param start
      */
-    public Ray(Vector direction, Point3D start) {
+    public Ray(Point3D start, Vector direction) {
+        if(direction.length()!=1)
+            direction.normalize();
         this.direction = direction.normalized();
         this.start = start;
     }

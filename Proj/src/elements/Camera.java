@@ -90,6 +90,6 @@ public class Camera {
         if(!isZero(yI))
             pij = pij.add(vUp.scale(-yI));
         Vector vij = pij.subtract(p0);
-        return new Ray(vij.normalize(), p0);
+        return new Ray(p0, vij.normalize());
     }
 }

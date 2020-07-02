@@ -102,77 +102,46 @@ public class PolygonTests {
      */
     @org.junit.Test
     public void testFindIntersections() {
-
-        Polygon p1 = new Polygon(new Point3D(2, 3, 2), new Point3D(4, 3, 2), new Point3D(4, 1, 2), new Point3D(2, 1, 2));
+        Polygon polygon = new Polygon(new Point3D(0,0,0), new Point3D(4,0,0), new Point3D(0,4,0));
 
         // ============ Equivalence Partitions Tests ==============
 
-        //TCO1: ray intersects with polygon
-        List<Intersectable.GeoPoint> intersects = p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(3, 2, 1)));
-        //checks amount of points returned
-        if (intersects == null || intersects.size() != 1)
-            fail("invalid amount of points returned");
-        //checks that points are correct
-        assertEquals("Error! Function does not find ray intersection",
-                new Point3D(3, 2, 2), intersects.get(0));
+        // TC01: Ray intersects the polygon
+        Point3D p = new Point3D(2, 1, 0);
+        List<Intersectable.GeoPoint> result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(0, -1, -1)));
+        assertEquals( "Wrong number of points",1, result.size());
+        assertEquals("Wrong Intersection point",p, result.get(0));
 
-        //TCO2: ray doesn't intersect with polygon
-        assertEquals("Error! Function finds intersection when there is none", null,
-                p1.findIntersections(new Ray(new Vector(0, 0, -1), new Point3D(3, 0, 2))));
+        // **** Group: Ray does not intersect the polygon
+        // TC02: Ray against vertex
+        result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(4, -3, -1)));
+        assertEquals( "Wrong number of points",null, result);
 
-        // ============ Boundary Value Tests ==============
-        //TCO3: ray is parallel to the polygon, in plane but not in polygon
-        assertEquals("invalid point for ray parallel to plane", null,
-                p1.findIntersections(new Ray(new Vector(1, 0, 0), new Point3D(4, 4, 2))));
+        // TC03: Ray against edge
+        result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(1, 1, -1)));
+        assertEquals("Wrong number of points",null, result);
 
-        //TCO4: ray is parallel to the polygon, hits plane and polygon
-        assertEquals("invalid point for ray parallel to plane", null,
-                p1.findIntersections(new Ray(new Vector(1, 0, 0), new Point3D(1, 2, 2))));
 
-        //TCO5: ray is parallel to the polygon and out of the plane
-        assertEquals("invalid point for ray parallel to plane", null,
-                p1.findIntersections(new Ray(new Vector(1, 5, 0), new Point3D(1, 1, -2))));
+        // =============== Boundary Values Tests ==================
 
-        //TCO6: ray is orthogonal to the plane and starts in the polygon
-        assertEquals("invalid point for ray orthogonal to plane", null,
-                p1.findIntersections(new Ray(new Vector(0, 0, 4), new Point3D(3, 1, 2))));
+        // **** Group: Ray begins before the plane (all tests 0 points)
 
-        //TCO7: ray is orthogonal to the plane, starts above it and hits the polygon
-        try {
-            assertEquals("invalid point for ray orthogonal to plane", new Point3D(3, 2, 2),
-                    p1.findIntersections(new Ray(new Vector(0, 0, -1), new Point3D(3, 2, 5))).get(0));
-        } catch (NullPointerException e) //if no point was returned
-        {
-            fail("invalid point for ray orthogonal to plane");
-        }
-        //TCO8: ray is orthogonal to the plane, starts above it and doesn't hit the polygon
-        assertEquals("invalid point for ray orthogonal to plane",
-                null, p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(6, 2, 5))));
+        // TC04: the ray on vertex
+        result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(2, -2, -1)));
+        assertEquals("Wrong number of points",null, result);
 
-        //TCO9: ray is orthogonal to the plane and starts below it
-        assertEquals("invalid point for ray orthogonal to plane",
-                null, p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(6, 2, 1))));
+        // TC05: the ray on edge
+        result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(0, -2, -1)));
+        assertEquals( "Wrong number of points",null, result);
 
-        //TC10: ray starts in the plane and is not orthogonal or parallel
-        assertEquals("invalid point for ray starting in plane",
-                null, p1.findIntersections(new Ray(new Vector(1, 2, 3), new Point3D(-5, 3, 2))));
-
-        //TC11: ray starts in the polygon and is not orthogonal or parallel to the plane
-        assertEquals("invalid point for ray starting in polygon",
-                null, p1.findIntersections(new Ray(new Vector(1, 2, 3), new Point3D(3, 3, 2))));
-
-        //TC12: ray begins in polygon's vertice
-        assertEquals("invalid point for ray starting in polygon's vernice",
-                null, p1.findIntersections(new Ray(new Vector(1, 2, 7), new Point3D(2, 3, 2))));
-
-        //TC13: ray begins on polygon's edge
-        assertEquals("invalid point for ray starting on polygon's edge",
-                null, p1.findIntersections(new Ray(new Vector(1, 2, 7), new Point3D(3, 3, 2))));
-        //another such point: new Ray(new Vector(2,3,2), new Point3D(0,1,0)
-
-        //TC14: ray intersects with polygon's edge
-        assertEquals("invalid point for ray intersecting with polygon's edge",
-                null, p1.findIntersections(new Ray(new Vector(0, 0, 1), new Point3D(4, 2, -2))));
+        // TC06: the ray on edge's continuation
+        result = polygon.findIntersections(new Ray(new Point3D(2, 2, 1),
+                new Vector(4, -2, -1)));
+        assertEquals( "Wrong number of points",null, result);
     }
-
 }

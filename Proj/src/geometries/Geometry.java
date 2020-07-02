@@ -6,6 +6,8 @@ import primitives.Point3D;
 import primitives.Vector;
 
 /**
+ * Interface Geometry is Interface for all the Geometries
+ *
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
@@ -40,7 +42,7 @@ public abstract class Geometry implements Intersectable {
      *
      * @param g geometry to copy
      */
-    public Geometry(Geometry g) {
+    public Geometry(geometries.Geometry g) {
         this.emission = g.emission;
         this.material = g.material;
     }
@@ -73,8 +75,10 @@ public abstract class Geometry implements Intersectable {
     }
 
     /**
-     * @param p Point across the geometric body
-     * @return The normal (vertical) vector to the body at this point
+     * @param p a 3D point
+     * @return the normal to the geometry at the point p
      */
+
     public abstract Vector getNormal(Point3D p);
+
 }

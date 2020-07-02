@@ -56,32 +56,32 @@ public class Cylinder extends Tube
     @Override
     public Vector getNormal(Point3D p)
     {
-        Plane plane = new Plane(_axisRay.getStart(), _axisRay.getDirection());
-        Vector v1 = _axisRay.getStart().subtract(p);
-        if((v1.dotProduct(_axisRay.getDirection()))==0) //the vectors are orthogonal
-            return (_axisRay.getDirection().scale(-1)).normalize();
-        Point3D p1 = _axisRay.getStart().add(_axisRay.getDirection().normalized().scale(_height));
+        Plane plane = new Plane(_ray.getStart(), _ray.getDirection());
+        Vector v1 = _ray.getStart().subtract(p);
+        if((v1.dotProduct(_ray.getDirection()))==0) //the vectors are orthogonal
+            return (_ray.getDirection().scale(-1)).normalize();
+        Point3D p1 = _ray.getStart().add(_ray.getDirection().normalized().scale(_height));
         v1 = p1.subtract(p);
-        if((v1.dotProduct(_axisRay.getDirection()))==0) //the vectors are orthogonal
-            return (_axisRay.getDirection()).normalize();
-        Vector v = p.subtract((_axisRay.getStart()));
-        double t = _axisRay.getDirection().dotProduct(v);
-        Point3D o = _axisRay.getStart().add(_axisRay.getDirection().scale(t));
+        if((v1.dotProduct(_ray.getDirection()))==0) //the vectors are orthogonal
+            return (_ray.getDirection()).normalize();
+        Vector v = p.subtract((_ray.getStart()));
+        double t = _ray.getDirection().dotProduct(v);
+        Point3D o = _ray.getStart().add(_ray.getDirection().scale(t));
         Vector n = (p.subtract(o)).normalize();
         return n;
     }
+
     /**
      * @return The height of the cylinder
      */
-    public double getHeight()
-    {
+    public double get_height() { //getter
         return _height;
     }
 
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
-        return null;
-    }
+    return null;
+}
 
     /**
      * @return A string representing the specified cylinder

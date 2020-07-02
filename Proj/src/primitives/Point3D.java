@@ -11,7 +11,7 @@ public class Point3D {
     private Coordinate x;
     private Coordinate y;
     private Coordinate z;
-    public final static Point3D ZERO = new Point3D(0, 0, 0);
+    public static Point3D ZERO = new Point3D(0, 0, 0);
     //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="ctor">
@@ -100,7 +100,7 @@ public class Point3D {
      * @return The distance between two points squared
      */
     public double distanceSquared(Point3D point) {
-        return (this.x.get() - point.x.get()) * (this.x.get() - point.x.get())
+        return    (this.x.get() - point.x.get()) * (this.x.get() - point.x.get())
                 + (this.y.get() - point.y.get()) * (this.y.get() - point.y.get())
                 + (this.z.get() - point.z.get()) * (this.z.get() - point.z.get());
     }

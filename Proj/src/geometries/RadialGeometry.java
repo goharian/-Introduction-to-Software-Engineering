@@ -11,13 +11,13 @@ import primitives.Vector;
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
-public abstract class RadialGeometry extends Geometry
-{
+public abstract class RadialGeometry extends Geometry {
 
     private double _radius;
 
     /**
      * constructor
+     *
      * @param emission
      * @param material
      */
@@ -28,13 +28,14 @@ public abstract class RadialGeometry extends Geometry
 
     /**
      * constructor
+     *
      * @param emission
      * @param _radius
      */
     public RadialGeometry(Color emission, double _radius) {
-
-        this(emission, new Material(0,0,0), _radius);
+        this(emission, new Material(0, 0, 0), _radius);
     }
+
 
     /**
      * builds Radial Geometry with radius
@@ -42,7 +43,7 @@ public abstract class RadialGeometry extends Geometry
      * @param _radius sets the desired radius
      */
     public RadialGeometry(double _radius) {
-        this(Color.BLACK, new Material(0,0,0), _radius);
+        this(Color.BLACK, new Material(0, 0, 0), _radius);
     }
 
     /**
@@ -52,7 +53,7 @@ public abstract class RadialGeometry extends Geometry
      */
     public RadialGeometry(RadialGeometry _radialGeometry) {
 
-        this._radius = _radialGeometry.getRadius();
+        this._radius = _radialGeometry.get_radius();
         this.emission = _radialGeometry.getEmission();
         this.material = _radialGeometry.getMaterial();
     }
@@ -60,8 +61,7 @@ public abstract class RadialGeometry extends Geometry
     /**
      * @return radius of the radial geometry
      */
-    public double getRadius()
-    {
+    public double get_radius() {
         return _radius;
     }
 
@@ -69,8 +69,7 @@ public abstract class RadialGeometry extends Geometry
      * @return A string representing the specified radial geometry object
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "radius=" + _radius;
     }
 

@@ -2,7 +2,6 @@ package primitives;
 
 import static primitives.Util.*;
 
-
 /**
  * Class Coordinate is the basic class representing a coordinate for Cartesian
  * coordinate system. The class is based on Util controlling the accuracy.
@@ -15,7 +14,6 @@ public final class Coordinate {
      * constraints
      */
     final double _coord;
-
     /**
      * Coordinate constructor receiving a coordinate value
      *
@@ -53,9 +51,6 @@ public final class Coordinate {
         return isZero(_coord - ((Coordinate)obj)._coord);
     }
 
-    /**
-     * @return A string representing the specified Coordinate object
-     */
     @Override
     public String toString() {
         return "" + _coord;

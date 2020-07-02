@@ -17,16 +17,11 @@ import java.util.List;
  */
 public class Scene {
     String _name;
-
-    Color _background; //background color
-
+    Color _background;          //background color
     AmbientLight _ambientLight; //scene lighting
-
-    Geometries _geometries; //list of 3d geometries
-
+    Geometries _geometries;     //list of 3d geometries
     Camera _camera;
-
-    double _distance; //distance of camera from viewplane
+    double _distance;           //distance of camera from viewplane
     List<LightSource> _lights;
 
     /**
@@ -35,7 +30,7 @@ public class Scene {
      */
     public Scene(String _name) {
         this._name = _name;
-        this._geometries = new Geometries();
+        _geometries = new Geometries();
         _lights = new LinkedList<LightSource>();
     }
 

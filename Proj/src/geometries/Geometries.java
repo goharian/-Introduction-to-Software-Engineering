@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Geometries class represents a list of shapes of all kinds
+ *
  * @author BS"D Matanya Goharian, Yaniv Moradov
  * <matanya.goharian@gmail.com > <MoradovYaniv.Ym@gmail.com>
  */
@@ -35,9 +36,9 @@ public class Geometries implements Intersectable {
      * @param geometries geometries to add to list
      */
     public void add(Intersectable... geometries) {
-
         this.geometries.addAll(Arrays.asList(geometries));
     }
+
 
     /**
      * @return list of interesections from all shapes in list
@@ -45,13 +46,12 @@ public class Geometries implements Intersectable {
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
         List<GeoPoint> intersections = new ArrayList();
-        for (Intersectable g: geometries)
-        {
+        for (Intersectable g : geometries) {
             List<GeoPoint> result = g.findIntersections(ray);
-            if(result !=null)
+            if (result != null)
                 intersections.addAll(result);
         }
-        if(intersections.isEmpty())
+        if (intersections.isEmpty())
             return null;
         return intersections;
     }

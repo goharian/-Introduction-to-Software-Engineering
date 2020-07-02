@@ -31,7 +31,7 @@ public class RenderTests {
         scene.setBackground(new Color(75, 0, 90));
         scene.setAmbientLight(new AmbientLight(new Color(255, 191, 0), 1));
 
-        scene.addGeometries(new Sphere( new Point3D(0, 0, 100), 50));
+        scene.addGeometries(new Sphere(50, new Point3D(0, 0, 100)));
 
         scene.addGeometries(
                 new Triangle(new Point3D(100, 0, 100), new Point3D(0, 100, 100), new Point3D(100, 100, 100)),
@@ -55,7 +55,7 @@ public class RenderTests {
         scene.setBackground(Color.BLACK);
         scene.setAmbientLight(new AmbientLight(new Color(java.awt.Color.WHITE), 0.2));
 
-        scene.addGeometries(new Sphere( new Point3D(0, 0, 100), 50));
+        scene.addGeometries(new Sphere(50, new Point3D(0, 0, 100)));
 
         scene.addGeometries(
                 new Triangle(new Color(java.awt.Color.BLUE),
